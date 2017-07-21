@@ -3,10 +3,90 @@
 Arista EOS Salt minion installation guide
 =========================================
 
+The Salt minion for Arista EOS is distributed as a SWIX extension and can be installed directly on the switch. The EOS network operating system is based on old Fedora distributions and the installation of the ``salt-minion`` requires backports. This SWIX extension contains the necessary backports, together with the Salt basecode.
+
+.. note::
+
+    This SWIX extension has been tested on Arista DCS-7280SE-68-R, running EOS 4.17.5M and vEOS 4.18.3F. 
+
+Installation from the Official SaltStack Repository
+===================================================
+
+Download the swix package and save it to flash.
+
+.. code-block:: bash
+
+   veos#copy https://salt-eos.netops.life/salt-eos-latest.swix flash:
+   veos#copy https://salt-eos.netops.life/startup.sh flash:
+
+Install the Extension
+=====================
+
+Copy the Salt package to extension
+
+.. code-block:: bash
+
+   veos#copy flash:salt-eos-latest.swix extension:
+
+Install the SWIX
+
+.. code-block:: bash
+
+   veos#extension salt-eos-latest.swix force
+
+Verify the installation
+
+.. code-block:: bash
+
+    veos#show extensions | include salt-eos      
+         salt-eos-2017-07-19.swix      1.0.11/1.fc25        A, F                27   
+
+Change the Salt master IP address or FQDN, by edit the variable (SALT_MASTER)
+
+.. code-block:: bash
+
+    veos#bash vi /mnt/flash/startup.sh
+
+Make sure you enable the eAPI with unix-socket 
+
+.. code-block:: bash
+
+    veos(config)#management api http-commands
+             protocol unix-socket
+             no shutdown
+
+Post-installation tasks
+=======================
+
+Generate Keys and host record and start Salt minion
+
+.. code-block:: bash
+
+   veos#bash 
+   #sudo /mnt/flash/startup.sh
+
+``salt-minion`` should be running
+
+Copy the installed extensions to boot-extensions
+
+.. code-block:: bash
+
+   veos#copy installed-extensions boot-extensions 
+
+Apply event-handler to let EOS start salt-minion during boot-up 
+
+.. code-block:: bash
+
+   veos(config)#event-handler boot-up-script       
+      trigger on-boot                 
+      action bash sudo /mnt/flash/startup.sh
+
+For more specific installation details of the ``salt-minion``, please refer to :ref:`Configuring Salt<configuring-salt>`.
+
 Important
 =========
 
-This swix file is built by the following packages and we tested it with DCS-7280SE-68-R(EOS 4.17.5M) and VEOS(4.18.3F).
+This SWIX extension contains the following RPM packages:
 
 .. code-block::
 
@@ -39,79 +119,3 @@ This swix file is built by the following packages and we tested it with DCS-7280
       python-urllib3-1.5-7.fc18.noarch.rpm
       python2-zmq-15.3.0-2.fc25.i686.rpm
       zeromq-4.1.4-5.fc25.i686.rpm
-
-
-Installation from the Official SaltStack Repository
-===================================================
-
-Download the swix package and save it in flash 
-
-.. code-block:: 
-
-   veos#copy https://salt-eos.netops.life/salt-eos-latest.swix flash:
-   veos#copy https://salt-eos.netops.life/startup.sh flash:
-
-Install Packages
-================
-
-
-Copy the Salt package to extension
-
-.. code-block::
-
-   veos#copy flash:salt-eos-latest.swix extension:
-
-Install the swix
-
-.. code-block::
-
-   veos#extension salt-eos-latest.swix force
-
-Verify the installation
-
-.. code-block::
-
-    veos#show extensions | i salt-eos      
-         salt-eos-2017-07-19.swix      1.0.11/1.fc25        A, F                27   
-
-Change the Salt master by edit the variable(SALT_MASTER)
-
-.. code-block::
-
-    veos#bash vi /mnt/flash/startup.sh
-
-Make sure you enable the api with unix-socket 
-
-.. code-block:: 
-
-    veos(config)#management api http-commands
-             protocol unix-socket
-             no shutdown
-
-
-Post-installation tasks
-=======================
-Generate Keys and host record and start Salt minion
-
-.. code-block:: 
-
-   veos#bash 
-   #sudo /mnt/flash/startup.sh
-
-salt-minion should be running
-
-Copy the installed extensions to boot-extensions
-
-.. code-block:: 
-
-   veos#copy installed-extensions boot-extensions 
-
-Apply event-handler to let EOS start salt-minion during boot-up 
-
-.. code-block:: bash
-
-   veos(config)#event-handler boot-up-script       
-      trigger on-boot                 
-      action bash sudo /mnt/flash/startup.sh
-
-Now go to the :ref:`Configuring Salt<configuring-salt>` page.
