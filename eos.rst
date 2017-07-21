@@ -62,22 +62,26 @@ Copy the Salt package to extension
    veos#copy flash:salt-eos-latest.swix extension:
 
 Install the swix
+
 .. code-block::
 
    veos#extension salt-eos-latest.swix force
 
 Verify the installation
+
 .. code-block::
 
     veos#show extensions | i salt-eos      
          salt-eos-2017-07-19.swix      1.0.11/1.fc25        A, F                27   
 
 Change the Salt master by edit the variable(SALT_MASTER)
+
 .. code-block::
 
     veos#bash vi /mnt/flash/startup.sh
 
 Make sure you enable the api with unix-socket 
+
 .. code-block:: 
 
     veos(config)#management api http-commands
@@ -88,6 +92,7 @@ Make sure you enable the api with unix-socket
 Post-installation tasks
 =======================
 Generate Keys and host record and start Salt minion
+
 .. code-block:: 
 
    veos#bash 
@@ -96,11 +101,13 @@ Generate Keys and host record and start Salt minion
 salt-minion should be running
 
 Copy the installed extensions to boot-extensions
+
 .. code-block:: 
 
    veos#copy installed-extensions boot-extensions 
 
 Apply event-handler to let EOS start salt-minion during boot-up 
+
 .. code-block:: bash
 
    veos(config)#event-handler boot-up-script       
