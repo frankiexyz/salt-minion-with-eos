@@ -6,7 +6,7 @@ Arista EOS Salt minion installation guide
 Important
 =========
 
-This swix file is built by the following packages
+This swix file is built by the following packages and we tested it with DCS-7280SE-68-R(EOS 4.17.5M) and VEOS(4.18.3F).
 
 .. code-block::
 
@@ -43,8 +43,6 @@ This swix file is built by the following packages
 
 Installation from the Official SaltStack Repository
 ===================================================
-
-Packages for Arista EOS 4.17 and 4.18 are available in the SaltStack repository.
 
 Download the swix package and save it in flash 
 
