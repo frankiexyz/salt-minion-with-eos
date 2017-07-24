@@ -9,6 +9,15 @@ The Salt minion for Arista EOS is distributed as a SWIX extension and can be ins
 
     This SWIX extension has been tested on Arista DCS-7280SE-68-R, running EOS 4.17.5M and vEOS 4.18.3F. 
 
+Important Notes
+===============
+
+This package is in beta, make sure to test it carefully before running it in production.
+
+If confirmed working correctly, please report and add a note on this page with the platform model and EOS version.
+
+If you want to uninstall this package, please refer to the uninstalling_ section.
+
 Installation from the Official SaltStack Repository
 ===================================================
 
@@ -83,8 +92,33 @@ Apply event-handler to let EOS start salt-minion during boot-up
 
 For more specific installation details of the ``salt-minion``, please refer to :ref:`Configuring Salt<configuring-salt>`.
 
-Important
-=========
+.. _uninstalling:
+
+Uninstalling
+============
+
+If you decide to uninstall this package, the following steps are recommended for safety:
+
+1. Remove the extension from boot-extensions
+
+.. code-block:: bash
+
+   veos#bash rm /mnt/flash/boot-extensions
+
+2. Remove the extension from extensions folder
+
+.. code-block:: bash
+
+   veos#bash rm /mnt/flash/.extensions/salt-eos-latest.swix
+
+2. Remove boot-up script
+
+.. code-block:: bash
+
+   veos(config)#no event-handler boot-up-script
+
+Additional Information
+======================
 
 This SWIX extension contains the following RPM packages:
 
